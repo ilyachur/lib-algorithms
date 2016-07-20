@@ -5,7 +5,7 @@
 namespace Sorting {
     namespace Insetrion {
         template <class T, class Compare>
-        void sort(T * array, size_t size, Compare comp) {
+        void sort(T * array, size_t size, Compare comp) noexcept {
             for (int i = 1; i < size; i++) {
                 int j = i - 1;
                 T key = array[i];
@@ -18,7 +18,7 @@ namespace Sorting {
         }
 
         template <class T>
-        void sort(T * array, size_t size) {
+        void sort(T * array, size_t size) noexcept {
             sort(array, size, std::less<T>());
         }
     }

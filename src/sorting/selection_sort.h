@@ -5,7 +5,7 @@
 namespace Sorting {
     namespace Selection {
         template <class T, class Compare>
-        void sort(T * array, size_t size, Compare comp) {
+        void sort(T * array, size_t size, Compare comp) noexcept {
             for (int i = 0; i < size - 1; i++) {
                 int min = i;
                 for (int j = i + 1; j < size; j++) {
@@ -20,7 +20,7 @@ namespace Sorting {
         }
 
         template <class T>
-        void sort(T * array, size_t size) {
+        void sort(T * array, size_t size) noexcept {
             sort(array, size, std::less<T>());
         }
     }
