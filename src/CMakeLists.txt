@@ -4,10 +4,12 @@ set(TARGET_NAME algorithms_lib)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 file (GLOB LIBRARY_SRC
+        ${CMAKE_CURRENT_SOURCE_DIR}/algorithms/*.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/sorting/*.cpp
         )
 
 file (GLOB LIBRARY_HEADERS
+        ${CMAKE_CURRENT_SOURCE_DIR}/algorithms/*.h
         ${CMAKE_CURRENT_SOURCE_DIR}/sorting/*.h
         )
 
