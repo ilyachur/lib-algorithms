@@ -30,6 +30,11 @@ TEST_F(find_subarray_tests, find_all_elements) {
     for (int i = 0; i < out_size; i++) {
         EXPECT_EQ(B[i], Bptr[i]);
     }
+
+    int С [5] = {-30, -5, -2, -50, -30};
+    int *Cptr = Algorithms::Find::subArray(С, 5, out_size);
+    EXPECT_EQ(1, out_size);
+    EXPECT_EQ(-2, *Cptr);
 }
 
 TEST_F(find_subarray_tests, sort_array_with_default_compare) {
