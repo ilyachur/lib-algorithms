@@ -4,3 +4,4 @@
 #include "selection_sort.h"
 #include "bubble_sort.h"
 #include "merge_sort.h"
+#include "heap_sort.h"

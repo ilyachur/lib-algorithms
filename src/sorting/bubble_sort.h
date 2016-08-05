@@ -1,7 +1,6 @@
 #pragma once
 
 #include <functional>
-#include <iostream>
 
 namespace Sorting {
     namespace Bubble {
