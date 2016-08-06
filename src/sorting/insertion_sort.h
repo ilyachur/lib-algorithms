@@ -3,7 +3,7 @@
 #include <functional>
 
 namespace Sorting {
-    namespace Insetrion {
+    namespace Insertion {
         template <class T, class Compare>
         void sort(T * array, size_t size, Compare comp) noexcept {
             for (int i = 1; i < size; i++) {

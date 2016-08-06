@@ -11,6 +11,10 @@ namespace Sorting {
             if (size < 2) {
                 return;
             }
+            // Randomized
+            // i = rand(size)
+            // swap(array[size - 1], array[i])
+
             int i = 0;
             for (int j = 0; j < size - 1; j++) {
                 if (comp(array[j], array[size - 1])) {
@@ -23,6 +27,7 @@ namespace Sorting {
             T tmp = array[size - 1];
             array[size - 1] = array[i];
             array[i] = tmp;
+
             sort(array, i, comp);
             if (size > i + 1) {
                 sort(array + i + 1, size - (i + 1), comp);
