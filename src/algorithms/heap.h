@@ -10,6 +10,8 @@ namespace Algorithms {
     private:
         T* array = nullptr;
         int heapHeight = 0;
+        int heapSize = 0;
+
         std::function<const T& (const T& a, const T& b)> operation = [](const T& a, const T& b) {
             return a;
         };
@@ -31,9 +33,6 @@ namespace Algorithms {
         }
 
     public:
-        // TODO: Fix it
-        int heapSize = 0;
-
         Heap() {}
         Heap(T *arr, int size) {
             heapSize = size;
@@ -134,6 +133,13 @@ namespace Algorithms {
                 swap(index, largest);
                 applyRule(largest);
             }
+        }
+
+        void remove(int index) {
+            for (int i = index; i < heapSize - 1; i++) {
+                array[i] = array[i + 1];
+            }
+            heapSize--;
         }
     };
 }

@@ -14,15 +14,11 @@ namespace Sorting {
                 }
                 return b;
             });
-            for(int i = size - 1; i >= 1; i--) {
-                T tmp = heap.getPtr()[0];
+            for(int i = size - 1; i >= 0; i--) {
+                array[i] = heap.getPtr()[0];
                 heap.getPtr()[0] = heap.getPtr()[i];
-                heap.getPtr()[i] = tmp;
-                heap.heapSize--;
+                heap.remove(i);
                 heap.applyRule(0);
-            }
-            for (int i = 0; i < size; i++) {
-                array[i] = heap.getPtr()[i];
             }
         }
 
