@@ -25,6 +25,9 @@ namespace Sorting {
             for (auto i = 0; i < size; i++) {
                 array[i] = returnArray[i];
             }
+
+            delete[] returnArray;
+            delete[] countArray;
         }
     }
 }
