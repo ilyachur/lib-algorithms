@@ -23,9 +23,11 @@ public:
 
 TEST_F(bucket_sort_tests, sort_array_with_bucket_sort) {
     unsigned int A [6] = {10, 1, 2, 40, 40, 3};
-
+    unsigned int sortedArr[6] = {1, 2, 3, 10, 40, 40};
     Sorting::Bucket::sort(A, 6, 1, 40);
-    ASSERT_THAT(A, testing::ElementsAre(1, 2, 3, 10, 40, 40));
+    for (unsigned int i = 0; i < 6; i++) {
+        EXPECT_EQ(sortedArr[i], A[i]);
+    }
 }
 
 TEST_F(bucket_sort_tests, sort_big_random_array) {
