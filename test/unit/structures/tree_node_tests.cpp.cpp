@@ -16,9 +16,9 @@ public:
 };
 
 TEST_F(tree_node_tests, create_nodes) {
-    Structures::TreeNode<std::string> *node = new Structures::TreeNode<std::string>("val", 2);
-    Structures::TreeNode<std::string> *node1 = new Structures::TreeNode<std::string>("test1", 0);
-    Structures::TreeNode<std::string> *node2 = new Structures::TreeNode<std::string>("test2", 1);
+    Structures::Tree::Node<std::string> *node = new Structures::Tree::Node<std::string>("val", 2);
+    Structures::Tree::Node<std::string> *node1 = new Structures::Tree::Node<std::string>("test1", 0);
+    Structures::Tree::Node<std::string> *node2 = new Structures::Tree::Node<std::string>("test2", 1);
     EXPECT_NE(nullptr, node->getAllChilds());
     EXPECT_EQ(2, node->getChildsCount());
     EXPECT_EQ("val", node->getValue());
