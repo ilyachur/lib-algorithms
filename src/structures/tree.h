@@ -146,6 +146,14 @@ namespace  Structures {
             }
 
             /**
+             * Set value
+             * @param value value for child node
+             */
+            void setValue(T value)  noexcept {
+                this->value = value;
+            }
+
+            /**
              * Add child to node
              * @param index child index
              * @param node node for adding
@@ -195,19 +203,6 @@ namespace  Structures {
         protected:
             Node<T> *root;
 
-            virtual Node<T> *search(Node<T> *element, T value) noexcept {
-                if (element == nullptr || value == element->getValue()) {
-                    return element;
-                }
-                for (int i = 0; element->getChildsCount(); i++) {
-                    auto *retElement = search(element->getChild(i), value);
-                    if (retElement != nullptr) {
-                        return retElement;
-                    }
-                }
-                return nullptr;
-            }
-
         public:
             Tree() {
                 root = nullptr;
@@ -233,8 +228,8 @@ namespace  Structures {
             Tree(const Tree &&tree) noexcept {
             }
 
-            Node<T> *search(T value) noexcept {
-                return search(root, value);
+            Node<T> *getRoot() noexcept {
+                return root;
             }
 
             virtual Node<T>* min() noexcept = 0;
@@ -243,24 +238,20 @@ namespace  Structures {
             virtual Node<T>* max(Node<T> *element) noexcept = 0;
             virtual Node<T>* successor(Node<T> *element) noexcept = 0;
             virtual void insert(Node<T> *element) noexcept = 0;
+            virtual Node<T> *search(T value) noexcept  = 0;
+            virtual Node<T> *search(Node<T> *element, T value) noexcept  = 0;
             virtual void insert(T value) noexcept = 0;
-            virtual void remove(Node<T> *element) noexcept = 0;
+            virtual void remove(Node<T> *element, bool recursive = false) noexcept = 0;
         };
 
         template <class T>
         class BinaryTree: public Tree<T> {
-        protected:
-            virtual Node<T> *search(Node<T> *element, T value) noexcept {
-                if (element == nullptr || value == element->getValue()) {
-                    return element;
-                }
-                if (value < element) {
-                    return search(element->getChild(0), value);
-                } else {
-                    return search(element->getChild(1), value);
-                }
-            }
         public:
+            static enum Child {
+                left = 0,
+                right = 1
+            } child;
+
             virtual Node<T>* min() noexcept {
                 return min(this->root);
             }
@@ -270,26 +261,26 @@ namespace  Structures {
             }
 
             virtual Node<T>* min(Node<T> *element) noexcept {
-                while (element->getChild(0) != nullptr) {
-                    element = element->getChild(0);
+                while (element->getChild(Child::left) != nullptr) {
+                    element = element->getChild(Child::left);
                 }
                 return element;
             }
 
             virtual Node<T>* max(Node<T> *element) noexcept {
-                while (element->getChild(1) != nullptr) {
-                    element = element->getChild(1);
+                while (element->getChild(Child::right) != nullptr) {
+                    element = element->getChild(Child::right);
                 }
                 return element;
             }
 
             virtual Node<T>* successor(Node<T> *element) noexcept {
-                if (element->getChild(1) != nullptr) {
-                    return min(element->getChild(1));
+                if (element->getChild(Child::right) != nullptr) {
+                    return min(element->getChild(Child::right));
                 }
                 Node<T>* parent = element->getParent();
                 Node<T>* currentElement = element;
-                while(parent != nullptr && currentElement == parent->getChild(1)) {
+                while(parent != nullptr && currentElement == parent->getChild(Child::right)) {
                     currentElement = parent;
                     parent = parent->getParent();
                 }
@@ -302,18 +293,18 @@ namespace  Structures {
                 while (tmp != nullptr) {
                     parent = tmp;
                     if (element->getValue() < tmp->getValue()) {
-                        tmp = tmp->getChild(0);
+                        tmp = tmp->getChild(Child::left);
                     } else {
-                        tmp = tmp->getChild(1);
+                        tmp = tmp->getChild(Child::right);
                     }
                 }
                 element->setParent(parent);
                 if (parent == nullptr) {
                     this->root = element;
                 } else if (element->getValue() < parent->getValue()) {
-                    parent->setChild(element, 0);
+                    parent->setChild(element, Child::left);
                 } else {
-                    parent->setChild(element, 1);
+                    parent->setChild(element, Child::right);
                 }
             }
 
@@ -322,9 +313,14 @@ namespace  Structures {
                 insert(element);
             }
 
-            virtual void remove(Node<T> *element) noexcept {
-                if (element->getChild(0) == nullptr || element->getChild(1) == nullptr) {
-                    if (element->getChild(0) == nullptr && element->getChild(1) == nullptr) {
+            virtual void remove(Node<T> *element, bool recursive = false) noexcept {
+                if (recursive) {
+                    delete element;
+                    return;
+                }
+
+                if (element->getChild(Child::left) == nullptr || element->getChild(Child::right) == nullptr) {
+                    if (element->getChild(Child::left) == nullptr && element->getChild(Child::right) == nullptr) {
                         if (element->getParent() != nullptr) {
                             for (auto i = 0; i < element->getParent()->getChildsCount(); i++) {
                                 if (element->getParent()->getChild(i) == element) {
@@ -334,9 +330,9 @@ namespace  Structures {
                             }
                         }
                     } else {
-                        int change_child = 0;
-                        if (element->getChild(1) != nullptr) {
-                            change_child = 1;
+                        int change_child = Child::left;
+                        if (element->getChild(Child::right) != nullptr) {
+                            change_child = Child::right;
                         }
                         element->getChild(change_child)->setParent(element->getParent());
                         if (element->getParent() != nullptr) {
@@ -350,9 +346,39 @@ namespace  Structures {
                     }
                     delete element;
                     return;
+                } else {
+                    Node<T> * suc = successor(element);
+                    element->setValue(suc->getValue());
+                    if (suc->getParent()->getChild(Child::left) == suc) {
+                        suc->getParent()->setChild(suc->getChild(Child::right), Child::left);
+                        if (suc->getChild(Child::right) != nullptr) {
+                            suc->getChild(Child::right)->setParent(suc->getParent());
+                        }
+                    } else {
+                        suc->getParent()->setChild(suc->getChild(Child::right), Child::right);
+                        if (suc->getChild(Child::right) != nullptr) {
+                            suc->getChild(Child::right)->setParent(suc->getParent());
+                        }
+                    }
+                    delete suc;
                 }
-                // TODO: For two childs
             }
+
+            virtual Node<T> *search(Node<T> *element, T value) noexcept {
+                if (element == nullptr || value == element->getValue()) {
+                    return element;
+                }
+                if (value < element->getValue()) {
+                    return search(element->getChild(Child::left), value);
+                } else {
+                    return search(element->getChild(Child::right), value);
+                }
+            }
+
+            virtual Node<T> *search(T value) noexcept {
+                return search(this->root, value);
+            }
+
         };
     }
 }
